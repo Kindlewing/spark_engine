@@ -8,10 +8,6 @@ fn main() {
     let event_loop = EventLoop::new();
     let wb = WindowBuilder::new();
     let cb = ContextBuilder::new();
-    let display = match Display::new(wb, cb, &event_loop) {
-        Ok(result) => result,
-        Err(why) => println!("Could not get display: {}", why)
-    };
-    
+    let display = Display::new(wb, cb, &event_loop).unwrap();
     core::run(event_loop, display);
 }
