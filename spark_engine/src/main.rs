@@ -1,32 +1,15 @@
-use glium::{glutin, Surface};
-fn main() {
+use glium::glutin;
 
+mod core;
+
+fn main() {
     let event_loop = glutin::event_loop::EventLoop::new();
     let wb = glutin::window::WindowBuilder::new();
     let cb = glutin::ContextBuilder::new();
-    let display = glium::Display::new(wb, cb, &event_loop).unwrap();
+    let display = match glium::Display::new(wb, cb, &event_loop) {
+        Ok(result) => result,
+        Err(why) => println!("Could not get display: {}", why)
+    };
     
-    run(event_loop, display);
-}
-
-
-fn run(event_loop: glutin::event_loop::EventLoop<()>, display: glium::Display) {
-    event_loop.run(move |ev, _, control_flow| {
-
-        let mut target = display.draw();
-        target.clear_color(0.33, 0.33, 0.33, 1.0);
-        target.finish().unwrap();
-
-        let next_frame_time = std::time::Instant::now() +
-            std::time::Duration::from_nanos(16_666_667);
-
-        *control_flow = glutin::event_loop::ControlFlow::WaitUntil
-            (next_frame_time);
-        if let glutin::event::Event::WindowEvent { event, .. } = ev {
-            if event == glutin::event::WindowEvent::CloseRequested {
-                *control_flow = glutin::event_loop::ControlFlow::Exit; 
-            }
-        }
-    });
-
+    core::run(event_loop, display);
 }
