@@ -1,6 +1,6 @@
 use glium::glutin::{window::WindowBuilder, ContextBuilder};
-use glium::glutin::event_loop::{EventLoop};
-use glium::{Display};
+use glium::glutin::event_loop::EventLoop;
+use glium::Display;
 
 mod core;
 
