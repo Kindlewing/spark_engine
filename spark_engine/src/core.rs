@@ -6,6 +6,7 @@ pub struct Color {
     pub blue: f32
 }
 
+/// The main program loop
 pub fn run(event_loop: glutin::event_loop::EventLoop<()>, display: glium::Display, color: Color) {
     event_loop.run(move |ev, _, control_flow| {
         let mut target = display.draw();
