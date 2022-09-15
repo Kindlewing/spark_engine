@@ -1,10 +1,16 @@
 use glium::{glutin, Surface};
 
-pub fn run(event_loop: glutin::event_loop::EventLoop<()>, display: glium::Display) {
-    event_loop.run(move |ev, _, control_flow| {
+pub struct Color {
+    pub red: f32,
+    pub green: f32,
+    pub blue: f32
+}
 
+/// The main program loop
+pub fn run(event_loop: glutin::event_loop::EventLoop<()>, display: glium::Display, color: Color) {
+    event_loop.run(move |ev, _, control_flow| {
         let mut target = display.draw();
-        target.clear_color(0.33, 0.33, 0.33, 1.0);
+        target.clear_color(color.red,  color.green, color.blue, 1.0);
         target.finish().unwrap();
 
         let next_frame_time = std::time::Instant::now() +
