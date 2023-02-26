@@ -2,7 +2,7 @@
 pub struct Color {
     pub r: f32,
     pub g: f32,
-    pub b: f32
+    pub b: f32,
 }
 
 impl Color {
@@ -10,7 +10,7 @@ impl Color {
         Color {
             r: red / 255.,
             g: green / 255.,
-            b: blue / 255. }
-    }  
+            b: blue / 255.,
+        }
+    }
 }
-
