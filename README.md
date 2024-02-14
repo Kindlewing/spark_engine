@@ -1,2 +1,3 @@
 # SparkEngine
-An OpenGL graphics engine in Rust
+
+An OpenGL graphics engine in C
