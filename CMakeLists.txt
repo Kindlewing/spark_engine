@@ -5,7 +5,7 @@ set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 set(SRC
-	src/main.c
+	src/main.cpp
 )
 
 add_subdirectory(./vendor/glfw)

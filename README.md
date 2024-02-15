@@ -9,7 +9,7 @@ An OpenGL graphics engine in C++
 ## Building and running
 
 ```bash
-git clone --recursive git@github.com:Kindlewing/spark_engine.git
+git clone --recurse-submodules git@github.com:Kindlewing/spark_engine.git
 cd spark_engine
 cmake -S . -B build
 cd build && make
