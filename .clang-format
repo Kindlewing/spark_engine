@@ -5,6 +5,7 @@ DerivePointerAlignment: false
 PointerAlignment: Left
 SpaceBeforeParens: Never
 BreakBeforeBraces: Attach
+AllowShortFunctionsOnASingleLine: None
 ColumnLimit: 80
 IncludeBlocks: Preserve
 SortIncludes: Never
