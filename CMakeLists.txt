@@ -12,6 +12,7 @@ set(SRC
 	src/glad.c
 	src/main.cpp
 	src/renderer.cpp
+	src/logger.cpp
 )
 
 add_subdirectory(./vendor/glfw)
