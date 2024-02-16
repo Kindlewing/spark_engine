@@ -1,4 +1,4 @@
-#include <GL/gl.h>
+#include <glad/glad.h>
 class Logger {
   public:
 	void error(const char* message);
