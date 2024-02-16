@@ -2,8 +2,10 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include "renderer.h"
+#include "logger.h"
 
 int main() {
+	Logger* logger = new Logger();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -33,13 +35,19 @@ int main() {
 	while(!glfwWindowShouldClose(window)) {
 		glfwSwapBuffers(window);
 
-		renderer->render();
-		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
+		// events
+		if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+			glfwSetWindowShouldClose(window, 1);
+		}
+
+		// rendering
+
+		renderer->clearColor();
 
 		glfwPollEvents();
 	}
 	glfwTerminate();
 	delete renderer;
+	delete logger;
 	return 0;
 }
