@@ -11,8 +11,7 @@ include_directories(spark PRIVATE ${INCLUDE_DIR})
 set(SRC
 	src/glad.c
 	src/main.cpp
-	${INCLUDE_DIR}/glad/glad.h
-	${INCLUDE_DIR}/KHR/khrplatform.h
+	src/renderer.cpp
 )
 
 add_subdirectory(./vendor/glfw)
