@@ -15,6 +15,6 @@ set(SRC
 	src/logger.cpp
 )
 
-add_subdirectory(./vendor/glfw)
+add_subdirectory(vendor/glfw)
 add_executable(spark ${SRC})
 target_link_libraries(spark glfw)
