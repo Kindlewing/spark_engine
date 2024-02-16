@@ -1,5 +1,4 @@
 #include "logger.h"
-#include <GL/gl.h>
 #include <iostream>
 #include <string>
 
@@ -8,7 +7,6 @@ void Logger::error(const char* message) {
 }
 
 GLenum Logger::glError(const char* file, int line) {
-
 	GLenum errorCode;
 	while((errorCode = glGetError()) != GL_NO_ERROR) {
 		std::string error;
