@@ -81,6 +81,36 @@ int main() {
 	glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
 	glCompileShader(fragmentShader);
 
+	unsigned int shaderProgram;
+	shaderProgram = glCreateProgram();
+
+	glAttachShader(shaderProgram, vertexShader);
+	glAttachShader(shaderProgram, fragmentShader);
+	glLinkProgram(shaderProgram);
+	glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
+
+	if(!success) {
+		glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
+	}
+
+	glUseProgram(shaderProgram);
+
+	glDeleteShader(vertexShader);
+	glDeleteShader(fragmentShader);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float),
+						  (void*)0);
+	glEnableVertexAttribArray(0);
+
+	unsigned int VAO;
+	glGenVertexArrays(1, &VAO);
+
+	glBindVertexArray(VAO);
+	glBindBuffer(GL_ARRAY_BUFFER, VAO);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float),
+						  (void*)0);
+	glEnableVertexAttribArray(0);
+
 	while(!glfwWindowShouldClose(window)) {
 		glfwSwapBuffers(window);
 
@@ -90,6 +120,10 @@ int main() {
 		}
 
 		// rendering
+		// TODO: This doesn't work
+		glUseProgram(shaderProgram);
+		glBindVertexArray(VAO);
+		glDrawArrays(GL_TRIANGLES, 0, 3);
 
 		glfwPollEvents();
 	}
