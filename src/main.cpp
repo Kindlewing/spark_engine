@@ -5,7 +5,6 @@
 #include "logger.h"
 
 int main() {
-	Logger* logger = new Logger();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -30,7 +29,25 @@ int main() {
 
 	glViewport(0, 0, 800, 60);
 
-	Renderer* renderer = new Renderer();
+	// triangle vertices
+	/* clang-format off */
+	float vertices[] = {
+		-0.5f, -0.5f, 0.0f,
+		0.5f, -0.5f, 0.0f,
+		0.5f,  0.5f, 0.0f, 
+	};
+	
+	unsigned int VBO;
+	// generate VBO
+	glGenBuffers(1, &VBO);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	// copy vertex data
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), &vertices, GL_STATIC_DRAW);
+
+
+	// unbind once done
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
 
 	while(!glfwWindowShouldClose(window)) {
 		glfwSwapBuffers(window);
@@ -42,12 +59,8 @@ int main() {
 
 		// rendering
 
-		renderer->clearColor();
-
 		glfwPollEvents();
 	}
 	glfwTerminate();
-	delete renderer;
-	delete logger;
 	return 0;
 }
