@@ -1,24 +1,10 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
+#include <string>
 #include "renderer.h"
+#include "shader.h"
 #include "logger.h"
-
-const char* vertexShaderSource =
-	"#version 330 core\n"
-	"layout (location = 0) in vec3 aPos;\n"
-	"void main()\n"
-	"{\n"
-	"   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-	"}\0";
-
-const char* fragmentShaderSource =
-	"#version 330 core\n"
-	"out vec4 FragColor;\n"
-	"void main()\n"
-	"{\n"
-	"    FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
-	"}\0";
 
 int main() {
 	if(!glfwInit()) {
@@ -43,42 +29,6 @@ int main() {
 	}
 
 	glViewport(0, 0, 800, 600);
-
-	unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
-	unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-
-	// vertex shader compilation
-	glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-	glCompileShader(vertexShader);
-
-	// fragment shader compilation
-	glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-	glCompileShader(fragmentShader);
-
-	unsigned int shaderProgram = glCreateProgram();
-	glAttachShader(shaderProgram, vertexShader);
-	glAttachShader(shaderProgram, fragmentShader);
-	glLinkProgram(shaderProgram);
-
-	// error checking
-	int success;
-	char infoLog[512];
-	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-
-	if(!success) {
-		glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-		std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n"
-				  << infoLog << std::endl;
-	}
-
-	// more error checking
-	glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-	if(!success) {
-		glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-	}
-
-	glDeleteShader(vertexShader);
-	glDeleteShader(fragmentShader);
 
 	// triangle vertices
 	/* clang-format off */
@@ -118,21 +68,13 @@ int main() {
 						  3 * sizeof(float),
 						  (void*)0);
 	glEnableVertexAttribArray(0);
-
-	// note that this is allowed, the call to glVertexAttribPointer registered
-	// VBO as the vertex attribute's bound vertex buffer object so afterwards we
-	// can safely unbind
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	// remember: do NOT unbind the EBO while a VAO is active as the bound
-	// element buffer object IS stored in the VAO; keep the EBO bound.
-	// glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-	// You can unbind the VAO afterwards so other VAO calls won't accidentally
-	// modify this VAO, but this rarely happens. Modifying other VAOs requires a
-	// call to glBindVertexArray anyways so we generally don't unbind VAOs (nor
-	// VBOs) when it's not directly necessary.
 	glBindVertexArray(0);
+
+	const char* vertexShaderSource = "./shaders/fragment/traingle.frag";
+	const char* fragmentShaderSource = "./shaders/vertex/traingle.vert";
+
+	Shader shader = Shader(vertexShaderSource, fragmentShaderSource);
 
 	while(!glfwWindowShouldClose(window)) {
 		// events
@@ -143,8 +85,8 @@ int main() {
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
+		shader.use();
 		// rendering
-		glUseProgram(shaderProgram);
 		glBindVertexArray(VAO);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
