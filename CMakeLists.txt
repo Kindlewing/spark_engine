@@ -11,6 +11,7 @@ include_directories(spark PRIVATE ${INCLUDE_DIR})
 set(SRC
 	src/glad.c
 	src/main.cpp
+	src/shader.cpp
 	src/renderer.cpp
 	src/logger.cpp
 )
