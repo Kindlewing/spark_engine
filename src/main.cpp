@@ -54,22 +54,29 @@ int main() {
 	};
 	/* clang-format on */
 
+	unsigned int VBO;
+	unsigned int VAO;
+
+	glGenBuffers(1, &VBO);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+	unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
+	unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+
 	// vertex shader compilation
-	unsigned int vertexShader;
-	vertexShader = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
 	glCompileShader(vertexShader);
 
 	// fragment shader compilation
-	unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 	glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
 	glCompileShader(fragmentShader);
 
-	// shader program creation and linking
 	unsigned int shaderProgram = glCreateProgram();
 	glAttachShader(shaderProgram, vertexShader);
 	glAttachShader(shaderProgram, fragmentShader);
 	glLinkProgram(shaderProgram);
+
 	// error checking
 	int success;
 	char infoLog[512];
@@ -81,27 +88,22 @@ int main() {
 				  << infoLog << std::endl;
 	}
 
-	glDeleteShader(vertexShader);
-	glDeleteShader(fragmentShader);
-
-	// more errors
+	// more error checking
 	glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
 	if(!success) {
 		glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
 	}
 
-	unsigned int VBO;
-	unsigned int VAO;
+	glDeleteShader(vertexShader);
+	glDeleteShader(fragmentShader);
 
-	// generate VBO
-	glGenBuffers(1, &VBO);
 	glGenVertexArrays(1, &VAO);
-
 	glBindVertexArray(VAO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float),
+	glVertexAttribPointer(0,
+						  3,
+						  GL_FLOAT,
+						  GL_FALSE,
+						  3 * sizeof(float),
 						  (void*)0);
 	glEnableVertexAttribArray(0);
 
@@ -118,7 +120,6 @@ int main() {
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		// rendering
-		// TODO: This doesn't work
 		glUseProgram(shaderProgram);
 		glBindVertexArray(VAO);
 		glDrawArrays(GL_TRIANGLES, 0, 3);

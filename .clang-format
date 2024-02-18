@@ -6,6 +6,8 @@ PointerAlignment: Left
 SpaceBeforeParens: Never
 BreakBeforeBraces: Attach
 AllowShortFunctionsOnASingleLine: None
+AllowAllArgumentsOnNextLine: false
+BinPackArguments: false
 ColumnLimit: 80
 IncludeBlocks: Preserve
 SortIncludes: Never
