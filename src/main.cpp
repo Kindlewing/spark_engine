@@ -51,8 +51,8 @@ int main() {
 	// and then configure vertex attributes(s).
 	glBindVertexArray(VAO);
 
-	VertexBuffer* vb = new VertexBuffer(vertices, sizeof(vertices));
-	IndexBuffer* ib = new IndexBuffer(indices, 3);
+	VertexBuffer vb = VertexBuffer(vertices, sizeof(vertices));
+	IndexBuffer ib = IndexBuffer(indices, 3);
 
 	glVertexAttribPointer(0,
 						  3,
@@ -85,6 +85,5 @@ int main() {
 		glfwPollEvents();
 	}
 	glfwTerminate();
-	delete vb;
 	return 0;
 }
