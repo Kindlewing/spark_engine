@@ -71,8 +71,8 @@ int main() {
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 
-	const char* vertexShaderSource = "./shaders/fragment/traingle.frag";
-	const char* fragmentShaderSource = "./shaders/vertex/traingle.vert";
+	const char* vertexShaderSource = "./shaders/traingle_vt.glsl";
+	const char* fragmentShaderSource = "./shaders/traingle_fr.glsl";
 
 	Shader shader = Shader(vertexShaderSource, fragmentShaderSource);
 

@@ -1,4 +1,9 @@
 #include "shader.h"
+#include <cstddef>
+#include <fstream>
+#include <string.h>
+
+using std::size_t;
 
 Shader::Shader(const char* vertexPath, const char* fragmentPath) {
 	std::string vertexCode;
@@ -10,12 +15,15 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath) {
 	fShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 	try {
 		// open files
-		vShaderFile.open(vertexPath);
-		fShaderFile.open(fragmentPath);
+		std::cout << "About to open files" << std::endl;
+		vShaderFile.open(vertexPath, std::ifstream::in);
+		fShaderFile.open(fragmentPath, std::ifstream::in);
+		std::cout << "Successfully opened files" << std::endl;
 		std::stringstream vShaderStream, fShaderStream;
 		// read file's buffer contents into streams
 		vShaderStream << vShaderFile.rdbuf();
 		fShaderStream << fShaderFile.rdbuf();
+
 		// close file handlers
 		vShaderFile.close();
 		fShaderFile.close();
@@ -23,7 +31,7 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath) {
 		vertexCode = vShaderStream.str();
 		fragmentCode = fShaderStream.str();
 	} catch(std::ifstream::failure e) {
-		std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
+		std::cerr << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
 	}
 	const char* vShaderCode = vertexCode.c_str();
 	const char* fShaderCode = fragmentCode.c_str();
