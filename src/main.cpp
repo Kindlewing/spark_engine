@@ -9,6 +9,15 @@
 #include "index_buffer.h"
 #include "vertex_array.h"
 
+struct layout {
+	GLuint vertices_start;
+	GLint size;
+	GLenum vertexDataType;
+	GLboolean should_be_normalized;
+	GLsizei stride;
+	void* pointer;
+};
+
 int main() {
 	if(!glfwInit()) {
 		return -1;
