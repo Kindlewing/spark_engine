@@ -1,9 +1,12 @@
+#include <cstddef>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include "renderer.h"
 #include "shader.h"
 #include "logger.h"
+#include "vertex_buffer.h"
+#include "index_buffer.h"
 
 int main() {
 	if(!glfwInit()) {
@@ -32,33 +35,24 @@ int main() {
 	// triangle vertices
 	/* clang-format off */
     float vertices[] = {
-         0.5f,  0.5f, 0.0f,  // top right
-         0.5f, -0.5f, 0.0f,  // bottom right
-        -0.5f, -0.5f, 0.0f,  // bottom left
-        -0.5f,  0.5f, 0.0f   // top left 
+		-0.5f, -0.5f, 0.0f,
+		 0.5f, -0.5f, 0.0f,
+		 0.0f,  0.5f, 0.0f
     };
-    unsigned int indices[] = {  // note that we start from 0!
-        0, 1, 3,  // first Triangle
-        1, 2, 3   // second Triangle
+    unsigned int indices[] = {
+        0, 1, 2
     };
 	/* clang-format on */
 
-	unsigned int VBO, VAO, EBO;
+	unsigned int VAO, EBO;
 	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
-	glGenBuffers(1, &EBO);
+
 	// bind the Vertex Array Object first, then bind and set vertex buffer(s),
 	// and then configure vertex attributes(s).
 	glBindVertexArray(VAO);
 
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-				 sizeof(indices),
-				 indices,
-				 GL_STATIC_DRAW);
+	VertexBuffer* vb = new VertexBuffer(vertices, sizeof(vertices));
+	IndexBuffer* ib = new IndexBuffer(indices, 3);
 
 	glVertexAttribPointer(0,
 						  3,
@@ -70,10 +64,8 @@ int main() {
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 
-	const char* vertexShaderSource = "../src/shaders/traingle_v.glsl";
-	const char* fragmentShaderSource = "../src/shaders/traingle_f.glsl";
-
-	Shader shader = Shader(vertexShaderSource, fragmentShaderSource);
+	const char* shaderSource = "../src/shaders/triangle.glsl";
+	Shader shader = Shader(shaderSource);
 
 	while(!glfwWindowShouldClose(window)) {
 		// events
@@ -87,11 +79,12 @@ int main() {
 		shader.use();
 		// rendering
 		glBindVertexArray(VAO);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
 	glfwTerminate();
+	delete vb;
 	return 0;
 }

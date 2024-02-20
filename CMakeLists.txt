@@ -14,6 +14,8 @@ set(SRC
 	src/shader.cpp
 	src/renderer.cpp
 	src/logger.cpp
+	src/vertex_buffer.cpp
+	src/index_buffer.cpp
 )
 
 add_subdirectory(vendor/glfw)

@@ -7,46 +7,41 @@
 
 using std::size_t;
 
-Shader::Shader(const char* vertexPath, const char* fragmentPath) {
-	std::string vertexCode;
-	std::string fragmentCode;
-	std::ifstream vShaderFile;
-	std::ifstream fShaderFile;
-	// ensure ifstream objects can throw exceptions:
-	vShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-	fShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-	try {
-		// open files
-		std::cout << "About to open files" << std::endl;
-		vShaderFile.open(vertexPath, std::ifstream::in);
-		fShaderFile.open(fragmentPath, std::ifstream::in);
-		std::cout << "Successfully opened files" << std::endl;
-		std::stringstream vShaderStream, fShaderStream;
-		// read file's buffer contents into streams
-		vShaderStream << vShaderFile.rdbuf();
-		fShaderStream << fShaderFile.rdbuf();
+Shader::Shader(const char* source) {
+	std::ifstream stream(source);
+	std::stringstream ss[2];
+	int mode = 0;
+	std::string line;
+	while(getline(stream, line)) {
+		if(line.find("//shader") != std::string::npos &&
+		   line.find("vertex") != std::string::npos) {
+			// Vertex
+			mode = 0;
+		}
 
-		// close file handlers
-		vShaderFile.close();
-		fShaderFile.close();
-		// convert stream into string
-		vertexCode = vShaderStream.str();
-		fragmentCode = fShaderStream.str();
-	} catch(std::ifstream::failure e) {
-		std::cerr << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
+		if(line.find("//shader") != std::string::npos &&
+		   line.find("fragment") != std::string::npos) {
+			// fragment
+			mode = 1;
+		}
+		ss[(int)mode] << line << "\n";
 	}
-	const char* vShaderCode = vertexCode.c_str();
-	const char* fShaderCode = fragmentCode.c_str();
+
+	std::string vShaderCode = ss[0].str();
+	std::string fShaderCode = ss[1].str();
+
+	const char* src_v = vShaderCode.c_str();
+	const char* src_f = fShaderCode.c_str();
 
 	unsigned int vertex, fragment;
 	// vertex shader
 	vertex = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(vertex, 1, &vShaderCode, NULL);
+	glShaderSource(vertex, 1, &src_v, NULL);
 	glCompileShader(vertex);
 	checkCompileErrors(vertex, "VERTEX");
 	// fragment Shader
 	fragment = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(fragment, 1, &fShaderCode, NULL);
+	glShaderSource(fragment, 1, &src_f, NULL);
 	glCompileShader(fragment);
 	checkCompileErrors(fragment, "FRAGMENT");
 	// shader Program
