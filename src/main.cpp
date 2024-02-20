@@ -1,7 +1,6 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
-#include <string>
 #include "renderer.h"
 #include "shader.h"
 #include "logger.h"
@@ -71,8 +70,8 @@ int main() {
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 
-	const char* vertexShaderSource = "./shaders/traingle_vt.glsl";
-	const char* fragmentShaderSource = "./shaders/traingle_fr.glsl";
+	const char* vertexShaderSource = "../src/shaders/traingle_v.glsl";
+	const char* fragmentShaderSource = "../src/shaders/traingle_f.glsl";
 
 	Shader shader = Shader(vertexShaderSource, fragmentShaderSource);
 

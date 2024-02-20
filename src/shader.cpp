@@ -1,6 +1,8 @@
 #include "shader.h"
 #include <cstddef>
 #include <fstream>
+#include <iostream>
+#include <sstream>
 #include <string.h>
 
 using std::size_t;
