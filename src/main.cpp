@@ -7,7 +7,8 @@
 #include "logger.h"
 #include "vertex_buffer.h"
 #include "index_buffer.h"
-#include "vertex_array.h"
+#include "raw_model.h"
+#include "loader.h"
 
 struct layout {
 	GLuint vertices_start;
@@ -40,6 +41,8 @@ int main() {
 		return -1;
 	}
 
+	RawModel model = RawModel{1, 3};
+
 	glViewport(0, 0, 800, 600);
 
 	// triangle vertices
@@ -62,7 +65,6 @@ int main() {
 	glBindVertexArray(VAO);
 
 	VertexBuffer vb = VertexBuffer(vertices, sizeof(vertices));
-	VertexArray va = VertexArray();
 	IndexBuffer ib = IndexBuffer(indices, 3);
 
 	glVertexAttribPointer(0,
