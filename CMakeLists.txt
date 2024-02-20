@@ -16,6 +16,8 @@ set(SRC
 	src/logger.cpp
 	src/vertex_buffer.cpp
 	src/index_buffer.cpp
+	src/vertex_array.cpp
+	src/vertex_buffer_layout.cpp
 )
 
 add_subdirectory(vendor/glfw)

@@ -7,6 +7,7 @@
 #include "logger.h"
 #include "vertex_buffer.h"
 #include "index_buffer.h"
+#include "vertex_array.h"
 
 int main() {
 	if(!glfwInit()) {
@@ -44,7 +45,7 @@ int main() {
     };
 	/* clang-format on */
 
-	unsigned int VAO, EBO;
+	unsigned int VAO;
 	glGenVertexArrays(1, &VAO);
 
 	// bind the Vertex Array Object first, then bind and set vertex buffer(s),
@@ -52,6 +53,7 @@ int main() {
 	glBindVertexArray(VAO);
 
 	VertexBuffer vb = VertexBuffer(vertices, sizeof(vertices));
+	VertexArray va = VertexArray();
 	IndexBuffer ib = IndexBuffer(indices, 3);
 
 	glVertexAttribPointer(0,
@@ -79,6 +81,7 @@ int main() {
 		shader.use();
 		// rendering
 		glBindVertexArray(VAO);
+		ib.bind();
 		glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
 
 		glfwSwapBuffers(window);
