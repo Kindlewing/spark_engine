@@ -2,9 +2,16 @@
 
 #include <glad/glad.h>
 #include <vector>
-#include "raw_model.h"
+#include "rawModel.h"
 
-RawModel loadToVAO(std::vector<float> positions);
-unsigned int createVAO();
-void storeInAttributeList(int attributeNumber, std::vector<float> data);
-void unbindVAO();
+class Loader {
+  public:
+	RawModel loadToVAO(void* data, unsigned int count);
+
+  private:
+	std::vector<unsigned int> vaos;
+	std::vector<unsigned int> vbos;
+	unsigned int createVAO();
+	void storeInAttribList(int attribNumber, GLsizeiptr size, void* data);
+	void unbindVAO();
+};

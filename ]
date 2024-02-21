@@ -1,0 +1,24 @@
+#include "loader.h"
+#include <vector>
+#include "rawModel.h"
+
+RawModel Loader::loadToVAO(std::vector<float> positions) {
+	int vaoID = createVAO();
+	storeInAttribList(0, positions);
+	unbindVAO();
+	return *new RawModel(vaoID, positions.size() / 3);
+}
+
+unsigned int Loader::createVAO() {
+	unsigned int VAO;
+	glGenVertexArrays(1, &VAO);
+	glBindVertexArray(VAO);
+	return VAO;
+}
+
+void Loader::storeInAttribList(int attributeNumber, std::vector<float> data) {
+}
+
+void Loader::unbindVAO() {
+	glBindVertexArray(0);
+}

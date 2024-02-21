@@ -5,19 +5,7 @@
 #include "renderer.h"
 #include "shader.h"
 #include "logger.h"
-#include "vertex_buffer.h"
-#include "index_buffer.h"
-#include "raw_model.h"
 #include "loader.h"
-
-struct layout {
-	GLuint vertices_start;
-	GLint size;
-	GLenum vertexDataType;
-	GLboolean should_be_normalized;
-	GLsizei stride;
-	void* pointer;
-};
 
 int main() {
 	if(!glfwInit()) {
@@ -41,8 +29,6 @@ int main() {
 		return -1;
 	}
 
-	RawModel model = RawModel{1, 3};
-
 	glViewport(0, 0, 800, 600);
 
 	// triangle vertices
@@ -57,15 +43,13 @@ int main() {
     };
 	/* clang-format on */
 
+	Loader* loader = new Loader();
 	unsigned int VAO;
 	glGenVertexArrays(1, &VAO);
 
 	// bind the Vertex Array Object first, then bind and set vertex buffer(s),
 	// and then configure vertex attributes(s).
 	glBindVertexArray(VAO);
-
-	VertexBuffer vb = VertexBuffer(vertices, sizeof(vertices));
-	IndexBuffer ib = IndexBuffer(indices, 3);
 
 	glVertexAttribPointer(0,
 						  3,
@@ -92,12 +76,12 @@ int main() {
 		shader.use();
 		// rendering
 		glBindVertexArray(VAO);
-		ib.bind();
 		glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
+	delete loader;
 	glfwTerminate();
 	return 0;
 }
