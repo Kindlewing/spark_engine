@@ -12,6 +12,6 @@ class Loader {
 	std::vector<unsigned int> vaos;
 	std::vector<unsigned int> vbos;
 	unsigned int createVAO();
-	void storeInAttribList(int attribNumber, GLsizeiptr size, void* data);
+	void storeInAttribList(int index, GLsizeiptr size, void* data);
 	void unbindVAO();
 };
