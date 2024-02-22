@@ -1,10 +1,11 @@
 #include <cstddef>
 #include <glad/glad.h>
+#include <glm/glm.hpp>
 #include <GLFW/glfw3.h>
 #include <iostream>
+#include "glm/ext/vector_float3.hpp"
 #include "renderer.h"
 #include "shader.h"
-#include "logger.h"
 #include "loader.h"
 
 int main() {
@@ -22,6 +23,7 @@ int main() {
 		glfwTerminate();
 		return -1;
 	}
+
 	glfwMakeContextCurrent(window);
 
 	if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
@@ -44,12 +46,25 @@ int main() {
 	/* clang-format on */
 
 	Loader* loader = new Loader();
-	unsigned int VAO;
+	unsigned int VAO, VBO, IBO;
 	glGenVertexArrays(1, &VAO);
 
 	// bind the Vertex Array Object first, then bind and set vertex buffer(s),
 	// and then configure vertex attributes(s).
 	glBindVertexArray(VAO);
+
+	// vertex buffer
+	glGenBuffers(1, &VBO);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+	// Index buffer
+	glGenBuffers(1, &IBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+				 sizeof(indices),
+				 indices,
+				 GL_STATIC_DRAW);
 
 	glVertexAttribPointer(0,
 						  3,
@@ -76,6 +91,7 @@ int main() {
 		shader.use();
 		// rendering
 		glBindVertexArray(VAO);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
 		glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
 
 		glfwSwapBuffers(window);
