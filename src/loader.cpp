@@ -1,11 +1,16 @@
 #include "loader.h"
 #include "rawModel.h"
+#include <fcntl.h>
+#include <vector>
 
-RawModel Loader::loadToVAO(void* data, unsigned int count) {
+using std::vector;
+RawModel Loader::loadToVAO(vector<float> vertices,
+						   vector<unsigned int> indices) {
 	int vaoID = createVAO();
-	storeInAttribList(0, sizeof(data), data);
+	bindIndexBuffer(indices);
+	storeInAttribList(0, vertices);
 	unbindVAO();
-	RawModel model = RawModel(vaoID, count);
+	RawModel model = RawModel(vaoID, indices.size());
 	return model;
 }
 
@@ -17,14 +22,28 @@ unsigned int Loader::createVAO() {
 	return VAO;
 }
 
-void Loader::storeInAttribList(int index, GLsizeiptr size, void* data) {
+void Loader::storeInAttribList(int index, vector<float> vertices) {
 	unsigned int VBO;
 	vbos.push_back(VBO);
 	glGenBuffers(1, &VBO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER,
+				 vertices.size() * sizeof(float),
+				 std::data(vertices),
+				 GL_STATIC_DRAW);
 	glVertexAttribPointer(index, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+void Loader::bindIndexBuffer(vector<unsigned int> indices) {
+	unsigned int IBO;
+	vbos.push_back(IBO);
+	glGenBuffers(1, &IBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+				 indices.size() * sizeof(unsigned int),
+				 std::data(indices),
+				 GL_STATIC_DRAW);
 }
 
 void Loader::unbindVAO() {

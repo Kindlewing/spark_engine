@@ -17,6 +17,7 @@ set(SRC
 	src/renderer.cpp
 	src/logger.cpp
 	src/rawModel.cpp
+	src/loader.cpp
 )
 
 add_subdirectory(vendor/glfw)
