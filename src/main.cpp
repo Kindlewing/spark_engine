@@ -1,8 +1,11 @@
 #include <cstddef>
 #include <glad/glad.h>
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include <GLFW/glfw3.h>
 #include <iostream>
+#include "glm/ext/matrix_transform.hpp"
 #include "renderer.h"
 #include "shader.h"
 #include "loader.h"
@@ -47,6 +50,8 @@ int main() {
 	Loader* loader = new Loader();
 	RawModel model = loader->loadToVAO(vertices, indices);
 
+	glm::mat4 trans = glm::mat4(1.0f);
+
 	const char* shaderSource = "../src/shaders/triangle.glsl";
 	Shader shader = Shader(shaderSource);
 
@@ -60,6 +65,8 @@ int main() {
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		shader.use();
+		unsigned int loc = glGetUniformLocation(shader.ID, "transform");
+		glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(trans));
 		// rendering
 		glBindVertexArray(model.getVaoID());
 		glEnableVertexAttribArray(0);
