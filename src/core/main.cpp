@@ -7,7 +7,6 @@
 #include <iostream>
 #include "renderer.h"
 #include "shader.h"
-#include "loader.h"
 #include "sprite.h"
 
 int main() {
