@@ -5,10 +5,10 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <GLFW/glfw3.h>
 #include <iostream>
-#include "glm/ext/matrix_transform.hpp"
 #include "renderer.h"
 #include "shader.h"
 #include "loader.h"
+#include "sprite.h"
 
 int main() {
 	if(!glfwInit()) {
@@ -35,25 +35,14 @@ int main() {
 
 	glViewport(0, 0, 800, 600);
 
-	// triangle vertices
-	/* clang-format off */
-    vector<float> vertices = {
-		-0.5f, -0.5f, 0.0f,
-		 0.5f, -0.5f, 0.0f,
-		 0.0f,  0.5f, 0.0f
-    };
-    vector<unsigned int> indices = {
-        0, 1, 2
-    };
 	/* clang-format on */
+	const char* shaderSource = "../src/core/graphics/shaders/triangle.glsl";
+	Shader shader = Shader(shaderSource);
 
-	Loader* loader = new Loader();
-	RawModel model = loader->loadToVAO(vertices, indices);
+	Renderer2D renderer = Renderer2D(shader);
+	Sprite* sprite = new Sprite(1.0f, 1.0f);
 
 	glm::mat4 trans = glm::mat4(1.0f);
-
-	const char* shaderSource = "../src/shaders/triangle.glsl";
-	Shader shader = Shader(shaderSource);
 
 	while(!glfwWindowShouldClose(window)) {
 		// events
@@ -65,21 +54,16 @@ int main() {
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		shader.use();
-		unsigned int loc = glGetUniformLocation(shader.ID, "transform");
-		glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(trans));
+		shader.uploadTransformationMatrix("transform", trans);
 		// rendering
-		glBindVertexArray(model.getVaoID());
-		glEnableVertexAttribArray(0);
-
-		glDrawElements(GL_TRIANGLES,
-					   model.getVertexCount(),
-					   GL_UNSIGNED_INT,
-					   0);
+		renderer.render(sprite,
+						{0.0f, 0.0f, 0.0f},
+						{sprite->width, sprite->height});
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
-	delete loader;
+	delete sprite;
 	glfwTerminate();
 	return 0;
 }

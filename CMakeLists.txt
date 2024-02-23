@@ -11,13 +11,14 @@ include_directories(spark PRIVATE ${INCLUDE_DIR})
 include_directories(spark PRIVATE ${VENDOR_INCLUDE_DIR})
 
 set(SRC
-	src/glad.c
-	src/main.cpp
-	src/shader.cpp
-	src/renderer.cpp
-	src/logger.cpp
-	src/rawModel.cpp
-	src/loader.cpp
+	src/core/glad.c
+	src/core/main.cpp
+	src/core/graphics/shader.cpp
+	src/core/graphics/renderer.cpp
+	src/core/logger.cpp
+	src/core/rawModel.cpp
+	src/core/loader.cpp
+	src/core/entities/sprite.cpp
 )
 
 add_subdirectory(vendor/glfw)

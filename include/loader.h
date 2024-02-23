@@ -2,11 +2,18 @@
 
 #include <glad/glad.h>
 #include <vector>
-#include "rawModel.h"
+
 using std::vector;
+
+struct VertexData {
+	int vaoID;
+	unsigned long vertexCount;
+};
+
 class Loader {
   public:
-	RawModel loadToVAO(vector<float> vertices, vector<unsigned int> indices);
+	~Loader();
+	VertexData loadToVAO(vector<float> vertices, vector<unsigned int> indices);
 
   private:
 	std::vector<unsigned int> vaos;

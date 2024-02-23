@@ -1,10 +1,12 @@
 #include "shader.h"
+#include "glm/gtc/type_ptr.hpp"
 #include <cstddef>
 #include <fstream>
 #include <iostream>
 #include <sstream>
 #include <string.h>
 
+using glm::mat4;
 using std::size_t;
 
 Shader::Shader(const char* source) {
@@ -58,6 +60,11 @@ Shader::Shader(const char* source) {
 
 void Shader::use() {
 	glUseProgram(ID);
+}
+
+void Shader::uploadTransformationMatrix(const string& name, mat4 mat) const {
+	unsigned int loc = glGetUniformLocation(ID, name.c_str());
+	glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(mat));
 }
 
 void Shader::setBool(const std::string& name, bool value) const {

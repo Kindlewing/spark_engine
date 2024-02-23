@@ -1,6 +1,10 @@
+#pragma once
+#include "glm/fwd.hpp"
 #include <glad/glad.h> // include glad to get all the required OpenGL headers
-
 #include <string>
+
+using glm::mat4;
+using std::string;
 
 class Shader {
   public:
@@ -15,6 +19,8 @@ class Shader {
 	void setBool(const std::string& name, bool value) const;
 	void setInt(const std::string& name, int value) const;
 	void setFloat(const std::string& name, float value) const;
+
+	void uploadTransformationMatrix(const string& name, mat4 mat) const;
 
   private:
 	void checkCompileErrors(unsigned int shader, std::string type);

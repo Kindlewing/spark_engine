@@ -1,17 +1,28 @@
 #include "loader.h"
-#include "rawModel.h"
 #include <fcntl.h>
+#include <iostream>
 #include <vector>
 
 using std::vector;
-RawModel Loader::loadToVAO(vector<float> vertices,
-						   vector<unsigned int> indices) {
+
+Loader::~Loader() {
+	std::cout << "Cleaning up loader GL data" << std::endl;
+	for(int i = 0; i < vaos.size(); i++) {
+		GLuint vao = vaos.at(i);
+		glDeleteVertexArrays(1, &vao);
+	}
+
+	for(int i = 0; i < vbos.size(); i++) {
+		GLuint vbo = vbos.at(i);
+		glDeleteBuffers(1, &vbo);
+	}
+}
+
+void Loader::loadToVAO(vector<float> vertices, vector<unsigned int> indices) {
 	int vaoID = createVAO();
 	bindIndexBuffer(indices);
 	storeInAttribList(0, vertices);
 	unbindVAO();
-	RawModel model = RawModel(vaoID, indices.size());
-	return model;
 }
 
 unsigned int Loader::createVAO() {
