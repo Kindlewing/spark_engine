@@ -40,9 +40,7 @@ int main() {
 	Shader shader = Shader(shaderSource);
 
 	Renderer2D renderer = Renderer2D(shader);
-	Sprite* sprite = new Sprite(1.0f, 1.0f);
-
-	glm::mat4 trans = glm::mat4(1.0f);
+	Sprite* sprite = new Sprite(0.5f, 0.5f);
 
 	while(!glfwWindowShouldClose(window)) {
 		// events
@@ -50,11 +48,6 @@ int main() {
 			glfwSetWindowShouldClose(window, 1);
 		}
 
-		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
-
-		shader.use();
-		shader.uploadTransformationMatrix("transform", trans);
 		// rendering
 		renderer.render(sprite,
 						{0.0f, 0.0f, 0.0f},

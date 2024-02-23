@@ -8,6 +8,9 @@ void Renderer2D::render(Sprite* sprite, glm::vec3 pos, glm::vec2 size) {
 	clearColor();
 	this->shader.use();
 	glm::mat4 model = glm::mat4(1.0f);
+	model = glm::scale(model, {size, 1.0f});
+	this->shader.uploadTransformationMatrix("transform", model);
+
 	glBindVertexArray(sprite->spriteData.vaoID);
 	glEnableVertexAttribArray(0);
 
