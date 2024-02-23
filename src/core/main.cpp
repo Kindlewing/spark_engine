@@ -1,8 +1,5 @@
 #include <cstddef>
 #include <glad/glad.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include "renderer.h"
@@ -35,7 +32,7 @@ int main() {
 	glViewport(0, 0, 800, 600);
 
 	/* clang-format on */
-	const char* shaderSource = "../src/core/graphics/shaders/triangle.glsl";
+	const char* shaderSource = "../src/core/graphics/shaders/quad.glsl";
 	Shader shader = Shader(shaderSource);
 
 	Renderer2D renderer = Renderer2D(shader);
