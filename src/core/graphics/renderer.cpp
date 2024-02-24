@@ -11,13 +11,10 @@ void Renderer2D::render(Sprite* sprite, glm::vec3 pos, glm::vec2 size) {
 	model = glm::scale(model, {size, 1.0f});
 	this->shader.uploadTransformationMatrix("transform", model);
 
-	glBindVertexArray(sprite->spriteData.vaoID);
+	glBindVertexArray(sprite->vaoID);
 	glEnableVertexAttribArray(0);
 
-	glDrawElements(GL_TRIANGLES,
-				   sprite->spriteData.vertexCount,
-				   GL_UNSIGNED_INT,
-				   0);
+	glDrawElements(GL_TRIANGLES, sprite->vertexCount, GL_UNSIGNED_INT, 0);
 }
 
 void Renderer2D::clearColor() {

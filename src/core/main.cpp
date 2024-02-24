@@ -39,6 +39,8 @@ int main() {
 	Renderer2D renderer = Renderer2D(shader);
 	Sprite* sprite = new Sprite(0.5f, 0.5f);
 
+	// textures
+
 	while(!glfwWindowShouldClose(window)) {
 		// events
 		if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "loader.h"
+#include <glad/glad.h>
 #include <vector>
 
 using std::vector;
@@ -8,13 +8,15 @@ using std::vector;
 class Sprite {
   public:
 	float width, height;
-	int id;
-	VertexData spriteData;
+	unsigned long vertexCount;
+	int vaoID;
 	Sprite(float width, float height);
 	~Sprite();
 
   private:
-	Loader* loader;
+	std::vector<unsigned int> vaos;
+	std::vector<unsigned int> vbos;
+	void storeInAttribList(int index, vector<float> vertices);
 	/* clang-format off */ 
 	vector<float> vertices = {
 		0.5f,  0.5f, 0.0f,  // top right

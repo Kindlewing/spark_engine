@@ -18,7 +18,6 @@ set(SRC
 	src/core/graphics/renderer.cpp
 	src/core/logger.cpp
 	src/core/rawModel.cpp
-	src/core/loader.cpp
 	src/core/entities/sprite.cpp
 	
 )
