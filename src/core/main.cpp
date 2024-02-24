@@ -1,6 +1,7 @@
 #include <cstddef>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <stb_image/stb_image.h>
 #include <iostream>
 #include "renderer.h"
 #include "shader.h"
