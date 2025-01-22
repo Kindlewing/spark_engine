@@ -2,6 +2,7 @@ package main
 
 import "base:runtime"
 import "core:log"
+import "core:math"
 import "core:os"
 import "spark"
 import gl "vendor:OpenGL"
@@ -90,6 +91,7 @@ main :: proc() {
 	if (ok == 0) {
 		gl.GetProgramInfoLog(shader_program, 512, nil, raw_data(&info))
 		log.errorf("Shader program linking failed: %s\n", info)
+		return
 	}
 	gl.DeleteShader(vt_shader)
 	gl.DeleteShader(fr_shader)
@@ -128,6 +130,13 @@ main :: proc() {
 
 		// DRAWING
 		gl.UseProgram(shader_program)
+
+		time := glfw.GetTime()
+		g := math.sin(time) / 2.0 + 0.5
+		color_loc := gl.GetUniformLocation(shader_program, "ourColor")
+		gl.Uniform4f(color_loc, 0.0, cast(f32)g, 0.0, 0.0)
+
+
 		gl.BindVertexArray(vao)
 		gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, ebo)
 		gl.DrawElements(gl.TRIANGLES, 6, gl.UNSIGNED_INT, cast(rawptr)cast(uintptr)0)
