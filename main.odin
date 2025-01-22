@@ -2,6 +2,7 @@ package main
 
 import "core:log"
 import "core:os"
+import "spark"
 import gl "vendor:OpenGL"
 import "vendor:glfw"
 
@@ -55,68 +56,59 @@ main :: proc() {
 	log.debug("Set the viewport")
 	gl.Viewport(0, 0, 800, 600)
 
+	// SHADERS
+	vt_shader: u32 = spark.compile_vertex_shader("shaders/triangle_vert.glsl")
+	fr_shader: u32 = spark.compile_fragment_shader("shaders/triangle_frag.glsl")
 
+	shader_program: u32
+	shader_program = gl.CreateProgram()
+	gl.AttachShader(shader_program, vt_shader)
+	gl.AttachShader(shader_program, fr_shader)
+	gl.LinkProgram(shader_program)
+	ok: i32
+	info: [512]u8
+
+	gl.GetProgramiv(shader_program, gl.LINK_STATUS, &ok)
+	if (ok == 0) {
+		gl.GetProgramInfoLog(shader_program, 512, nil, raw_data(&info))
+		log.errorf("Shader program linking failed: %s\n", info)
+	}
+	gl.DeleteShader(vt_shader)
+	gl.DeleteShader(fr_shader)
+
+	// Setup buffer objects
 	verticies := [9]f32{-0.5, -0.5, 0.0, 0.5, -0.5, 0.0, 0.0, 0.5, 0.0}
-
 	vbo: u32
+	vao: u32
+	gl.GenVertexArrays(1, &vao)
 	gl.GenBuffers(1, &vbo)
+
+	gl.BindVertexArray(vao)
 	gl.BindBuffer(gl.ARRAY_BUFFER, vbo)
 	gl.BufferData(vbo, size_of(verticies), &verticies, gl.STATIC_DRAW)
 
 
-	// SHADERS
-	shader_vt_file: string = "shaders/triangle_vert.glsl"
-	shader_src_vt, vt_ok := os.read_entire_file_from_filename(shader_vt_file)
-	if !vt_ok {
-		log.fatalf("Err reading file\n")
-	}
-
-	vt_shader: u32
-	fr_shaer: u32
-
-	vt_shader = gl.CreateShader(gl.VERTEX_SHADER)
-	gl.ShaderSource(vt_shader, 1, cast(^cstring)&shader_src_vt, nil)
-
-	{
-		log.debugf("About to compile shader defined in: %s\n", shader_vt_file)
-		gl.CompileShader(vt_shader)
-		ok: i32
-		info: [512]u8
-		gl.GetShaderiv(vt_shader, gl.COMPILE_STATUS, &ok)
-		if ok == 0 {
-			gl.GetShaderInfoLog(vt_shader, 512, nil, raw_data(&info))
-			log.errorf("ERROR::SHADER::VERTEX::COMPILATION_FAILED\n %s\n", info)
-		}
-	}
-
-	shader_fr_file: string = "shaders/triangle_frag.glsl"
-	shader_src_fr, fr_ok := os.read_entire_file_from_filename(shader_fr_file)
-	if !fr_ok {
-		log.fatalf("Err reading file\n")
-	}
-	log.debugf("Shader source:\n\n %s\n\n", shader_src_fr)
-	fr_shader: u32
-	fr_shader = gl.CreateShader(gl.FRAGMENT_SHADER)
-	gl.ShaderSource(fr_shader, 1, cast(^cstring)&shader_src_fr, nil)
-
-	{
-		log.debugf("About to compile shader defined in: %s\n", shader_fr_file)
-		gl.CompileShader(fr_shader)
-		ok: i32
-		info: [512]u8
-		gl.GetShaderiv(fr_shader, gl.COMPILE_STATUS, &ok)
-		if ok == 0 {
-			gl.GetShaderInfoLog(fr_shader, 512, nil, raw_data(&info))
-			log.errorf("ERROR::SHADER::VERTEX::COMPILATION_FAILED\n %s\n", info)
-		}
-	}
+	gl.VertexAttribPointer(0, 3, gl.FLOAT, false, 3 * size_of(f32), 0)
+	gl.EnableVertexAttribArray(0)
 
 
 	for !glfw.WindowShouldClose(window) {
-		process_input(window)
-
 		gl.ClearColor(18 / 255.0, 18 / 255.0, 18 / 255.0, 1)
 		gl.Clear(gl.COLOR_BUFFER_BIT)
+
+		process_input(window)
+
+		// UPDATE
+
+		//END UPDATE
+
+		// DRAWING
+		gl.UseProgram(shader_program)
+		gl.BindVertexArray(vao)
+		gl.DrawArrays(gl.TRIANGLES, 0, 3)
+
+
+		// END DRAWING
 
 		glfw.SwapBuffers(window)
 		glfw.PollEvents()
