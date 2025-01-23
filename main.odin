@@ -3,6 +3,7 @@ package main
 import "base:runtime"
 import "core:log"
 import "core:math"
+import "core:math/linalg"
 import "core:os"
 import "spark"
 import gl "vendor:OpenGL"
@@ -16,6 +17,9 @@ WINDOW_HEIGHT :: 600
 GL_VIEWPORT_WIDTH :: 800
 GL_VIEWPORT_HEIGHT :: 600
 
+set_addr_type :: proc(p: rawptr, name: cstring) {
+	(^rawptr)(p)^ = glfw.GetProcAddress(name)
+}
 
 process_input :: proc(window: glfw.WindowHandle) {
 	if glfw.GetKey(window, glfw.KEY_ESCAPE) == glfw.PRESS {
@@ -67,9 +71,7 @@ main :: proc() {
 	glfw.SetFramebufferSizeCallback(window, resize_callback)
 
 	log.debug("Loading GLAD procs")
-	gl.load_up_to(GLFW_MAJOR_VERSION, GLFW_MINOR_VERSION, proc(p: rawptr, name: cstring) {
-		(^rawptr)(p)^ = glfw.GetProcAddress(name)
-	})
+	gl.load_up_to(GLFW_MAJOR_VERSION, GLFW_MINOR_VERSION, set_addr_type)
 
 
 	log.debug("Set the viewport")
@@ -97,16 +99,19 @@ main :: proc() {
 	gl.DeleteShader(fr_shader)
 
 	// Setup buffer objects
-	verticies := [?]f32{0.5, 0.5, 0.0, 0.5, -0.5, 0.0, -0.5, -0.5, 0.0, -0.5, 0.5, 0.0}
+	verticies_top := [?]f32{-0.5, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.5, 0.0}
+	verticies_bottom := [?]f32{-0.5, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, -0.5, 0.0}
 	indices := [?]u32{0, 1, 3, 1, 2, 3}
+
+	vbo_top: u32
+	gl.GenBuffers(1, &vbo_top)
+
 	vao: u32
 	gl.GenVertexArrays(1, &vao)
 	gl.BindVertexArray(vao)
 
-	vbo: u32
-	gl.GenBuffers(1, &vbo)
-	gl.BindBuffer(gl.ARRAY_BUFFER, vbo)
-	gl.BufferData(gl.ARRAY_BUFFER, size_of(verticies), &verticies, gl.STATIC_DRAW)
+	gl.BindBuffer(gl.ARRAY_BUFFER, vbo_top)
+	gl.BufferData(gl.ARRAY_BUFFER, size_of(verticies_top), &verticies_top, gl.STATIC_DRAW)
 
 	ebo: u32
 	gl.GenBuffers(1, &ebo)
@@ -131,15 +136,9 @@ main :: proc() {
 		// DRAWING
 		gl.UseProgram(shader_program)
 
-		time := glfw.GetTime()
-		g := math.sin(time) / 2.0 + 0.5
-		color_loc := gl.GetUniformLocation(shader_program, "ourColor")
-		gl.Uniform4f(color_loc, 0.0, cast(f32)g, 0.0, 0.0)
-
 
 		gl.BindVertexArray(vao)
-		gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, ebo)
-		gl.DrawElements(gl.TRIANGLES, 6, gl.UNSIGNED_INT, cast(rawptr)cast(uintptr)0)
+		gl.DrawArrays(gl.TRIANGLES, 0, 3 * size_of(f32))
 
 
 		// END DRAWING
@@ -147,6 +146,9 @@ main :: proc() {
 		glfw.SwapBuffers(window)
 	}
 
+	glfw.DestroyWindow(window)
+	gl.BindBuffer(ebo, 0)
+	gl.BindBuffer(vbo_top, 0)
 	glfw.Terminate()
 	log.destroy_console_logger(context.logger)
 	return
